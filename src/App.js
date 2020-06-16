@@ -1,19 +1,17 @@
 import React, { useState, useEffect } from 'react';
 import './App.css';
-import { houseData, typeRepairs } from './Data';
 import Points from './Components/Points/Points';
 import Building from './Components/Building/Building';
-import { func } from 'prop-types';
+import Loader from './Components/Loader/Loader';
+import { Helmet } from 'react-helmet';
 
 function App() {
   const [data, setData] = useState([]);
   const [isActive, setIsActive] = useState(false);
   const [hasError, setErrors] = useState(false);
-  const [types, setTypes] = useState([]);
   const [objectCount, setObjectCount] = useState(0);
-  const [currentId, setCurrentId] = useState(1);
-
-  // let types = [];
+  const [currentId, setCurrentId] = useState(0);
+  const [loading, setLoading] = useState(true);
 
   async function fetchData() {
     const res = await fetch('https://sr-practice.herokuapp.com/api');
@@ -27,6 +25,7 @@ function App() {
 
   useEffect(() => {
     fetchData();
+    setLoading(false);
   }, []);
 
   useEffect(() => {
@@ -59,7 +58,10 @@ function App() {
 
   return (
     <div>
-      {console.log(types)}
+      {console.log(loading)}
+      <Helmet>
+        <title>Tair's practice</title>
+      </Helmet>
       <div className="container mx-auto px-2 ">
         <div className="flex flex-wrap">
           <div className="xl:w-1/4">
@@ -126,8 +128,14 @@ function App() {
               {titleGroupButtons}
             </div>
           </div>
-
-          <div className="xl:w-3/4 xl:pl-8 lg:pl-8 ">{buildingData}</div>
+          {loading ? (
+            <div className="mx-auto my-auto">
+              {' '}
+              <Loader />
+            </div>
+          ) : (
+            <div className="xl:w-3/4 xl:pl-8 lg:pl-8 ">{buildingData}</div>
+          )}
         </div>
       </div>
       <div
